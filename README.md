@@ -90,7 +90,7 @@ Les contributions sont les bienvenues ! Veuillez ouvrir un problème ou soumettr
 
 ## Auteur
 
-Worketyamo
+Barthez Kenwou
 
 ## Informations supplémentaires
 
