@@ -18,15 +18,37 @@ model User {
   name     String
   email    String @unique
   password String
+
+  // un utilisateur peut avoir plusieurs emprunts
+  emprunts Loand[]
 }
 
 model Book {
-  book_id       String @id @default(auto()) @map("_id") @db.ObjectId
-  title         String @unique
+  book_id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  title         String  @unique
   author        String
   description   String
   publicateYear Int
-  ISBN          String
+  ISBN          String?
+  state State @default(disponible)
+
+  // Un livre peut faire l'objet de plusieurs emprunts
+  emprunts Loand[]  @relation(fields: [loandID], references: [loand_id])
+  loandID  String[] @db.ObjectId
+}
+
+model Loand {
+  loand_id  String   @id @default(auto()) @map("_id") @db.ObjectId
+  loandDate DateTime
+  backDate  DateTime
+
+  // un emprunt peut etre pour plusieur livre a la fois
+  books  Book[]   @relation(fields: [bookID], references: [book_id])
+  bookID String[] @db.ObjectId
+
+  // Un emprunt peut faire allusion a un et un seul utilisateurs
+  user   User   @relation(fields: [userID], references: [user_id])
+  userID String @db.ObjectId
 }
 
 model Notification {
@@ -36,10 +58,7 @@ model Notification {
   message         String
 }
 
-model Loand {
-  loand_id  String   @id @default(auto()) @map("_id") @db.ObjectId
-  bookID    String
-  userID    String
-  loandDate DateTime
-  backDate  DateTime
+enum State {
+  emprunte
+  disponible
 }
