@@ -1,3 +1,7 @@
 import otpGenerator from 'otp-generator';
 
-otpGenerator
+const myOtp = {
+    otpGenerator
+}
+
+export default myOtp;
