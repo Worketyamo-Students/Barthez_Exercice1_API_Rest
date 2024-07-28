@@ -18,9 +18,6 @@ model User {
   name     String
   email    String @unique
   password String
-
-  otp String?
-  otp_expireAt DateTime?
 }
 
 model Book {

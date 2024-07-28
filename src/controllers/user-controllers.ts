@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import { HttpCode } from "../core/constants";
 import { comparePassword, hashText } from "../functions/pasword-crypt";
 import { msgError } from "../functions/message";
@@ -29,6 +29,10 @@ const usersControllers = {
             });
             if(!newUser) return msgError.notFound(res, "Erreur d'ajout du nouvel utilisateur !");
 
+            // Generer une Access token et generer un refresh tokken pour l'utilisateur
+
+
+
             // Message de success
             res.status(HttpCode.CREATED).json({msg: `l'utilisateur: ${newUser.name} a ete creer avec success`});
         } catch (error) {
@@ -37,7 +41,7 @@ const usersControllers = {
     },
 
     // Function to get One Existing Users
-    getAllUsers: async(req: Request, res: Response) => {
+    consultProfileUser: async(req: Request, res: Response) => {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
             const {id} = req.params;
@@ -149,6 +153,30 @@ const usersControllers = {
 
             // Message de success
             res.status(HttpCode.OK).json({msg: `utilisateur Connecté !`});
+        } catch (error) {
+            return msgError.serveurError(res, error);
+        }
+    },
+
+    deconnexionUser: async(req: Request, res: Response) => {
+        try {
+            // Recuperation de l'identifiant dans les parametres de la requete
+            const {id} = req.params;
+            if(!id) msgError.badRequest(res, "identifiant invalide !");
+
+            const selectUser = Prisma.user.findUnique({
+                where: {
+                    user_id: id
+                }
+            });
+            if(!selectUser) return msgError.notFound(res, "L'utilisateur n'existe pas !")
+
+            // Invalider le token de l'utilisateur
+
+
+            
+            // Message de success
+            res.status(HttpCode.OK).json({msg: "Utilisateur deconnecté !"});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
