@@ -9,7 +9,7 @@ const booksControllers = {
     // Consulter la liste des livres disponibles
     getAllBooks: async(req: Request, res: Response) =>{
         try {
-            const allBooks = prisma.book.findMany({
+            const allBooks = await prisma.book.findMany({
                 select: {
                     title: true,
                     author: true,
@@ -19,6 +19,8 @@ const booksControllers = {
                 }
             });
             if(!allBooks) return msgError.notFound(res, "Erreur lors de la recuperation des livres !");
+
+            if(allBooks.length === 0) return res.status(HttpCode.OK).json({msg: "Pas encore de livre pour le moment !"})
 
             // Message de succes
             res.status(HttpCode.OK).json({allBooks});
@@ -31,25 +33,25 @@ const booksControllers = {
     addBook: async(req: Request, res: Response) =>{
         try {
             // Recuperation des information du corps de la requete
-            const {title, author, desription, annee, isbn} = req.body;
+            const {title, author, description, publicateYear, ISBN} = req.body;
 
             // Verification de la disponibilité de tous les elements
-            if(!title || !author || !desription || annee || isbn) return msgError.badRequest(res, "veiller saisir toutes les informations!");
+            if(!title || !author || !description || !publicateYear || !ISBN) return msgError.badRequest(res, "veiller saisir toutes les informations!");
 
             // Ajout d'un nouveau livre avec les infos entrés
             const newBook = await prisma.book.create({
                 data: {
                     title: title,
                     author: author,
-                    description: desription,
-                    publicateYear: annee,
-                    ISBN: isbn
+                    description: description,
+                    publicateYear: publicateYear,
+                    ISBN: ISBN
                 }
             });
             if(!newBook) return msgError.notFound(res, "Erreur lors de l'ajout du nouveau livre !");
 
             // Message de succes
-            res.status(HttpCode.OK).json({msg: `Le livre ${newBook.title} a bien été ajouté.`});                
+            res.status(HttpCode.OK).json({msg: `Le livre ${newBook.title} a bien été ajouté.`});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
@@ -63,10 +65,10 @@ const booksControllers = {
             if(!id) msgError.badRequest(res, "identifiant invalide !");
 
             // Recuperation des information du corps de la requete
-            const {title, author, desription, annee, isbn} = req.body;
+            const {title, author, description, publicateYear, ISBN} = req.body;
 
             // Verification de la disponibilité de tous les elements
-            if(!title || !author || !desription || annee || isbn) return msgError.badRequest(res, "veiller saisir toutes les informations!");
+            if(!title || !author || !description || !publicateYear || !ISBN) return msgError.badRequest(res, "veiller saisir toutes les informations!");
 
             // Modificatiion du livre dnt l'id correspond a celui entré
             const updateBook = await prisma.book.update({
@@ -77,9 +79,9 @@ const booksControllers = {
                 data: {
                     title: title,
                     author: author,
-                    description: desription,
-                    publicateYear: annee,
-                    ISBN: isbn
+                    description: description,
+                    publicateYear: publicateYear,
+                    ISBN: ISBN
                 }
             });
             if(!updateBook) return msgError.notFound(res, "Erreur lors de l'ajout du nouveau livre !");
