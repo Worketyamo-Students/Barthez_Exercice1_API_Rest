@@ -1,10 +1,9 @@
 import { Response } from "express";
 import { HttpCode } from "../core/constants";
-import chalk from "chalk";
 
 const msgError = {
     serveurError : (res: Response, error: unknown) => {
-        console.error(chalk.red(error))
+        console.error(error)
         res
             .status(HttpCode.INTERNAL_SERVER_ERROR)
             .json({msg: "Internal Server Error"})
@@ -12,7 +11,7 @@ const msgError = {
     },
 
     badRequest: (res: Response, errorMsg: string) => {
-        console.error(chalk.redBright(errorMsg))
+        console.error(errorMsg)
         res
             .status(HttpCode.BAD_REQUEST)
             .json({msg: errorMsg})
@@ -20,7 +19,7 @@ const msgError = {
     },
 
     notFound: (res: Response, errorMsg: string) => {
-        console.error(chalk.redBright(errorMsg))
+        console.error(errorMsg)
         res
             .status(HttpCode.NOT_FOUND)
             .json({msg: errorMsg})
