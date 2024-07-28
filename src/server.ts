@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { ONE_HUNDRED, SIXTY } from './core/constants';
 import user from './routes/user-routes';
 import book from './routes/book-routes';
+import loand from './routes/loand-routes';
 
 const app = express();
 app.use(express.json());
@@ -25,7 +26,8 @@ app.use(morgan('combined'));
 
 // Routes de mon application
 app.use('/users',user);
-app.use('/books', book)
+app.use('/books', book);
+app.use('/loands', loand);
 
 
 setupSwagger(app);

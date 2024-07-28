@@ -30,21 +30,21 @@ model Book {
   description   String
   publicateYear Int
   ISBN          String?
-  state State @default(disponible)
+  status        State   @default(disponible)
 
   // Un livre peut faire l'objet de plusieurs emprunts
-  emprunts Loand[]  @relation(fields: [loandID], references: [loand_id])
-  loandID  String[] @db.ObjectId
+  emprunts Loand[]  @relation(fields: [loandIDs], references: [loand_id])
+  loandIDs String[] @db.ObjectId
 }
 
 model Loand {
-  loand_id  String   @id @default(auto()) @map("_id") @db.ObjectId
-  loandDate DateTime
-  backDate  DateTime
+  loand_id  String    @id @default(auto()) @map("_id") @db.ObjectId
+  loandDate DateTime  @default(now())
+  backDate  DateTime?
 
   // un emprunt peut etre pour plusieur livre a la fois
-  books  Book[]   @relation(fields: [bookID], references: [book_id])
-  bookID String[] @db.ObjectId
+  books   Book[]   @relation(fields: [bookIDs], references: [book_id])
+  bookIDs String[] @db.ObjectId
 
   // Un emprunt peut faire allusion a un et un seul utilisateurs
   user   User   @relation(fields: [userID], references: [user_id])
