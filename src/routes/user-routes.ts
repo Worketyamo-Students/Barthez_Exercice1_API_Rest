@@ -10,15 +10,15 @@ user.post('/signup', usersControllers.inscriptionUser);
 user.post('/login', usersControllers.connexionUser);
 
 // C-Deconnexion de l'utilisateur
-user.post('logout', usersControllers.deconnexionUser);
+user.post('/logout/:id', usersControllers.deconnexionUser);
 
 // D-Consulter le profile de l'utilisateur
-user.get('profile',usersControllers.consultProfileUser);
+user.get('/profile/:id',usersControllers.consultProfileUser);
 
 // E-Mettre a jour le profil de l'utilisateur
-user.put('profile', usersControllers.updateUser);
+user.put('/profile/:id', usersControllers.updateUser);
 
 // F-supprimer un utilisateur
-user.delete('delete', usersControllers.deleteUser);
+user.delete('/delete/:id', usersControllers.deleteUser);
 
 export default user;
