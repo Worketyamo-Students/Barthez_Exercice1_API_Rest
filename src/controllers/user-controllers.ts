@@ -68,13 +68,12 @@ const usersControllers = {
                 select: {
                     name: true,
                     email: true,
-                    password: true
                 }
             });
             if(!User) return msgError.notFound(res, "Erreur lors de la selection de l'utilisateur!");
 
             // Message de success
-            res.status(HttpCode.OK).json({msg: `Utilisateur trouvé: `, User});
+            res.status(HttpCode.OK).json({User});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
@@ -111,7 +110,7 @@ const usersControllers = {
             if(!userUpdate) return msgError.notFound(res, "Erreur lors de la modification de l'utilisateur");
 
             // Message de success
-            res.status(HttpCode.OK).json({msg: `l'utilisateur ${userUpdate.name} mis à jour !`});
+            res.status(HttpCode.OK).json({msg: `utilisateur ${userUpdate.name} mis à jour !`});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
@@ -160,8 +159,8 @@ const usersControllers = {
             const hashPassword = selectUser.password;
 
             // comparaison des mots de passes
-            const comparaison = comparePassword(password, hashPassword);
-            if(!comparaison) return msgError.notFound(res, "Echec de la connexion !");
+            const comparaison = await comparePassword(password, hashPassword);
+            if(!comparaison) return msgError.notFound(res, "Mot depasse incorrect!");
 
             // Message de success
             res.status(HttpCode.OK).json({msg: `utilisateur Connecté !`});
@@ -176,17 +175,17 @@ const usersControllers = {
             const {id} = req.params;
             if(!id) msgError.badRequest(res, "identifiant invalide !");
 
-            const selectUser = Prisma.user.findUnique({
+            const selectUser = await Prisma.user.findUnique({
                 where: {
                     user_id: id
                 }
             });
-            if(!selectUser) return msgError.notFound(res, "L'utilisateur n'existe pas !")
+            if(!selectUser) return msgError.notFound(res, "L'utilisateur n'existe pas !");
 
             // Invalider le token de l'utilisateur
 
 
-            
+
             // Message de success
             res.status(HttpCode.OK).json({msg: "Utilisateur deconnecté !"});
         } catch (error) {

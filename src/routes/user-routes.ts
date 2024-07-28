@@ -19,6 +19,6 @@ user.get('/profile/:id',usersControllers.consultProfileUser);
 user.put('/profile/:id', usersControllers.updateUser);
 
 // F-supprimer un utilisateur
-user.delete('/delete/:id', usersControllers.deleteUser);
+user.delete('/profile/:id', usersControllers.deleteUser);
 
 export default user;
