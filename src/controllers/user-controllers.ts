@@ -16,6 +16,18 @@ const usersControllers = {
             // Verifier que tous les informations ont bien été remplis
             if(!name || !email || !password)  return msgError.badRequest(res, "Veillez remplir tous les champs !");
 
+            // Verifions l'uniciter de l'email entrer par l'utilisateur
+            const existingEmail = await Prisma.user.findFirst({
+                where: {
+                    email: email
+                },
+
+                select: {
+                    email: true
+                }
+            });
+            if(existingEmail) return msgError.badRequest(res, "cet Email est dejà utilisé !");
+
             // Crypter le mot de passe de l'utilisateur;
             const hashPassword = await hashText(password);
 
@@ -34,7 +46,7 @@ const usersControllers = {
 
 
             // Message de success
-            res.status(HttpCode.CREATED).json({msg: `l'utilisateur: ${newUser.name} a ete creer avec success`});
+            res.status(HttpCode.CREATED).json({msg: `l'utilisateur: ${newUser.name} a ete ajouter avec success`});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
