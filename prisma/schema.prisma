@@ -21,6 +21,9 @@ model User {
 
   // un utilisateur peut avoir plusieurs emprunts
   emprunts Loand[]
+
+  // Un utilisateur peut recevoir plusieur notifications
+  notifications Notification[]
 }
 
 model Book {
@@ -35,6 +38,9 @@ model Book {
   // Un livre peut faire l'objet de plusieurs emprunts
   emprunts Loand[]  @relation(fields: [loandIDs], references: [loand_id])
   loandIDs String[] @db.ObjectId
+
+  //un livre peut a lui seul recevoir plusieur notifications
+  notification Notification[]
 }
 
 model Loand {
@@ -53,9 +59,16 @@ model Loand {
 
 model Notification {
   notification_id String @id @default(auto()) @map("_id") @db.ObjectId
-  userID          String
-  livreID         String
   message         String
+
+  // Une notification fait reference a un seul livre qui est devenu disponible
+  livre Book @relation(fields: [livreID], references: [book_id])
+  livreID         String @db.ObjectId
+  
+  // Une notification est envoyé a une et une seule personne à la fois
+  responsableNotif User @relation(fields: [userID], references: [user_id])
+  userID          String @db.ObjectId
+  
 }
 
 enum State {

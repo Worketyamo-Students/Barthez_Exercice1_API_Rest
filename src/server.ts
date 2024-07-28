@@ -9,6 +9,7 @@ import { ONE_HUNDRED, SIXTY } from './core/constants';
 import user from './routes/user-routes';
 import book from './routes/book-routes';
 import loand from './routes/loand-routes';
+import notification from './routes/notification-routes';
 
 const app = express();
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use(morgan('combined'));
 app.use('/users',user);
 app.use('/books', book);
 app.use('/loands', loand);
+app.use('/notifications', notification);
 
 
 setupSwagger(app);
