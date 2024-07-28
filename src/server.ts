@@ -23,7 +23,7 @@ app.use(
 app.use(morgan('combined'));
 
 // Routes de mon application
-app.use('users',user);
+app.use('/users',user);
 
 
 setupSwagger(app);
