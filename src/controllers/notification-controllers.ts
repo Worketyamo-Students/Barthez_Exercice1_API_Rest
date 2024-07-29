@@ -42,8 +42,8 @@ const notificationControllers = {
     remenberCallBackDate: async(req:Request, res:Response) => {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
-            const {userID, empruntID} = req.params;
-            if(!userID || !empruntID) msgError.badRequest(res, "identifiant invalide !");
+            const {userID, empruntID, message} = req.params;
+            if(!userID || !empruntID || !message) msgError.badRequest(res, "identifiant invalide !");
             
             // verifier l'utilisateur specifier
             const user = await prisma.user.findFirst({
@@ -53,7 +53,7 @@ const notificationControllers = {
             });
             if(!user) return msgError.notFound(res, "l'utilisateur' specifier est introuvabe")
 
-            // verifier le l'emprunt specifier
+            // verifier l'etat de l'emprunt specifier
             const loand = await prisma.loand.findFirst({
                 where: {
                     loand_id: empruntID,
