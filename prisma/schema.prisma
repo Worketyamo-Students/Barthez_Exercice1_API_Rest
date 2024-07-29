@@ -64,11 +64,10 @@ model Notification {
   // Une notification fait reference a un seul livre qui est devenu disponible
   livre Book @relation(fields: [livreID], references: [book_id])
   livreID         String @db.ObjectId
-  
+
   // Une notification est envoyé a une et une seule personne à la fois
   responsableNotif User @relation(fields: [userID], references: [user_id])
   userID          String @db.ObjectId
-  
 }
 
 enum State {

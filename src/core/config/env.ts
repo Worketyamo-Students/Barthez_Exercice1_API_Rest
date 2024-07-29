@@ -12,4 +12,9 @@ export const envs = {
 	MONGO_DB_NAME: get('MONGO_DB_NAME').default('worketyamo').asString()
 };
 
+export const MAIL_INFO = {
+	USER: get('USERNAME').default('username@gmail.com').asEmailString(),
+	PASSWORD: get('PASSWORD').default('my_password').asString()
+}
+
 export const CONNECTION_STRING = `mongodb://${envs.MONGO_INITDB_ROOT_USERNAME}:${envs.MONGO_INITDB_ROOT_PASSWORD}@172.28.0.2:27017/${envs.MONGO_DB_NAME}?authSource=admin`;
