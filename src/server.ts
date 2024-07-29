@@ -10,12 +10,20 @@ import user from './routes/user-routes';
 import book from './routes/book-routes';
 import loand from './routes/loand-routes';
 import notification from './routes/notification-routes';
+import helmet from 'helmet';
+import cors from 'cors'
+import cookieParser from 'cookie-parser';
+
+
 
 const app = express();
 
 // Configurations de securité
-// app.use(helmet() //Pour configurer les entete http securisés
-// app.use(cors())) // Pour gerer le partage des ressources
+app.use(helmet()) //Pour configurer les entete http securisés
+app.use(cors({
+	methods: ['GET', 'POST', 'PUT', 'DELETE'],
+	allowedHeaders: ['Content-Type', 'Authorization']
+})) // Pour gerer le partage des ressources de maniere securisée
 
 // Configuration globaux de l'application express
 app.use(express.json()); // parser les requets json
@@ -28,13 +36,53 @@ app.use(
 		message: 'Trop de Requete à partir de cette adresse IP '
 	})
 );//limite le nombre de requete
+app.use(cookieParser()); //configuration des cookies (JWT)
 app.use(morgan('combined'));// Journalisation des requetes au format combined
 
+
+
 // Routes de mon application
-app.use('/users',user);
-app.use('/books', book);
-app.use('/loands', loand);
-app.use('/notifications', notification);
+
+//Routes des utilisateurs
+app.use(
+	'/users',
+	rateLimit({
+		max: 10,
+		windowMs: 6,
+		message: 'Trop de Requete à partir de cette adresse IP '
+	}),	
+	user
+);
+//Route des livres
+app.use(
+	'/books',
+	rateLimit({
+		max: 10,
+		windowMs: 6,
+		message: 'Trop de Requete à partir de cette adresse IP '
+	}),	
+	book
+);
+// Routes des emprunts
+app.use(
+	'/loands',
+	rateLimit({
+		max: 10,
+		windowMs: 6,
+		message: 'Trop de Requete à partir de cette adresse IP '
+	}),	 
+	loand
+);
+// Route des notifications
+app.use(
+	'/notifications', 
+	rateLimit({
+		max: 10,
+		windowMs: 6,
+		message: 'Trop de Requete à partir de cette adresse IP '
+	}),	
+	notification
+);
 
 // Configuration de la documentation avec Swagger
 setupSwagger(app);

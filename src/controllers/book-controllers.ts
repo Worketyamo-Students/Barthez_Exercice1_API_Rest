@@ -48,7 +48,7 @@ const booksControllers = {
             if(!newBook) return msgError.notFound(res, "Erreur lors de l'ajout du nouveau livre !");
 
             // Message de succes
-            res.status(HttpCode.OK).json({msg: `Le livre ${newBook.title} a bien été ajouté.`});
+            res.status(HttpCode.CREATED).json({msg: `Le livre ${newBook.title} a bien été ajouté.`});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
