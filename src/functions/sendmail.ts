@@ -1,35 +1,53 @@
-import { MAIL_INFO } from '../core/config/env';
 import nodemailer from 'nodemailer'
 import fs from 'fs';
 import ejs from 'ejs';
+import path from 'path'
+import dotenv from 'dotenv'
+dotenv.config();
 
 interface ItemplateData {
     name: string,
     content: string
 }
+const emailConfig = {
+    email: process.env.EMAIL,
+    password: process.env.PASSWORD
+}
+const validateEmailConfig = () => {
+    if(!emailConfig.email || !emailConfig.password) 
+    console.error("Addresse email ou mot de passe non configuré !");
+    process.exit(1);
+};
+validateEmailConfig();
 
-async function sendMail(receiver: string, templateData: ItemplateData){
-    // Configuration du transporteur de l'email
-    const transporter = nodemailer.createTransport({
-        host: "gmail",
-        port: 465,
-        secure: true,
-        auth: {
-            user: MAIL_INFO.USER,
-            pass: MAIL_INFO.PASSWORD,
-        },
-    });
+// Configuration du transporteur de l'email
+const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: 465,
+    secure: true,
+    auth: {
+        user: emailConfig.email,
+        pass: emailConfig.password,
+    },
+});
+console.log(process.env.EMAIL, process.env.PASSWORD)
 
+async function sendMail(receiver: string, templateData: ItemplateData) {
     // Lecture du contenu du template ejs
-    const template = fs.readFileSync(__dirname + '/mail.ejs', 'utf8')
+    const templatePath = path.join(__dirname + '/mail.ejs')
+    const template = fs.readFileSync(templatePath, 'utf8')
 
     // Creer un rendu HTML avec les données lu dans le fichier ejs.
     const content = ejs.render(template, templateData)
 
+    // L'objet de l'email est statique
+    const subject = "Bibliotheque Communal";
+
     //options du message a envoyer
     const mailOptions = {
-        from: "kenwoubarthez@gmail.com",
+        from: emailConfig.email,
         to: receiver,
+        subject: subject,
         html: content
     }
 
@@ -38,7 +56,7 @@ async function sendMail(receiver: string, templateData: ItemplateData){
         await transporter.sendMail(mailOptions)
         console.log("Message envoyé avec succes")
     } catch (error) {
-        console.error("Une erreur est survenu lors de l'envoi de l'email: "+error);
+        console.error(`Une erreur est survenue lors de l'envoi de l'addresse email: ${error}`)
     }
 }
 
