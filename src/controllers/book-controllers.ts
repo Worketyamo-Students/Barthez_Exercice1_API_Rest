@@ -35,9 +35,6 @@ const booksControllers = {
             // Recuperation des information du corps de la requete
             const {title, author, description, publicateYear, ISBN} = req.body;
 
-            // Verification de la disponibilité de tous les elements
-            if(!title || !author || !description || !publicateYear) return msgError.badRequest(res, "veiller saisir toutes les informations!");
-
             // Ajout d'un nouveau livre avec les infos entrés
             const newBook = await prisma.book.create({
                 data: {
@@ -66,9 +63,6 @@ const booksControllers = {
 
             // Recuperation des information du corps de la requete
             const {title, author, description, publicateYear, ISBN} = req.body;
-
-            // Verification de la disponibilité de tous les elements
-            if(!title || !author || !description || !publicateYear) return msgError.badRequest(res, "veiller saisir toutes les informations!");
 
             // Modificatiion du livre dnt l'id correspond a celui entré
             const updateBook = await prisma.book.update({

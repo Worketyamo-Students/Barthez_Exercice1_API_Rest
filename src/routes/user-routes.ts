@@ -12,13 +12,13 @@ user.post('/signup', validator.validateUser, validate, usersControllers.inscript
 user.post('/login', validator.validateBook, validate, usersControllers.connexionUser);
 
 // C-Deconnexion de l'utilisateur
-user.post('/logout/:id',usersControllers.deconnexionUser);
+user.post('/logout/:id', usersControllers.deconnexionUser);
 
 // D-Consulter le profile de l'utilisateur
 user.get('/profile/:id',usersControllers.consultProfileUser);
 
 // E-Mettre a jour le profil de l'utilisateur
-user.put('/profile/:id', usersControllers.updateUser);
+user.put('/profile/:id',validator.validateUser, validate ,usersControllers.updateUser);
 
 // F-supprimer un utilisateur
 user.delete('/profile/:id', usersControllers.deleteUser);

@@ -14,18 +14,10 @@ const usersControllers = {
             // recuperer les informations du corps de la requete
             const {name, email, password} = req.body;
 
-            // Verifier que tous les informations ont bien été remplis
-            if(!name || !email || !password)  return msgError.badRequest(res, "Veillez remplir tous les champs !");
-
             // Verifions l'uniciter de l'email entrer par l'utilisateur
             const existingEmail = await Prisma.user.findFirst({
-                where: {
-                    email: email
-                },
-
-                select: {
-                    email: true
-                }
+                where: {email: email},
+                select: {email: true}
             });
             if(existingEmail) return msgError.badRequest(res, "cet Email est dejà utilisé !");
 
@@ -46,6 +38,7 @@ const usersControllers = {
             const message = "<h1>Bienvenue à la bibliotheque commubale</h1> <br> <p>Ici Vous pouvez:</p> <ul><li>Venir lire gratuitement sur des sujets d'actualité, mangas, journaux, bouquins, et levres de tout genre</li> <li>Faire des emprunts des livres</li> <li>Discuter sur ce que vous lisez quotidiennement avec d'autres passionés de la lecture</li></ul>"
             await sendMail(newUser.email,{name: newUser.name, content: message})
             console.log(newUser.email, newUser.name, message)
+            
             // Generer une Access token et generer un refresh tokken pour l'utilisateur
 
 
@@ -66,14 +59,8 @@ const usersControllers = {
 
             // recherche de l'utilisateur avec cet identifiant
             const User = await Prisma.user.findUnique({
-                where: {
-                    user_id: id
-                },
-
-                select: {
-                    name: true,
-                    email: true,
-                }
+                where: {user_id: id},
+                select: {name: true, email: true,}
             });
             if(!User) return msgError.notFound(res, "Erreur lors de la selection de l'utilisateur!");
 
@@ -93,9 +80,6 @@ const usersControllers = {
 
             // recuperer les informations du corps de la requete
             const {name, email, password} = req.body;
-
-            // Verifier que tous les informations ont bien été remplis
-            if(!name || !email || !password)  return msgError.badRequest(res, "Veillez remplir tous les champs !");
 
             // Crypter le mot de passe de l'utilisateur;
             const hashPassword = await hashText(password);

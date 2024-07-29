@@ -3,6 +3,7 @@ import fs from 'fs';
 import ejs from 'ejs';
 import path from 'path'
 import dotenv from 'dotenv'
+
 dotenv.config();
 
 interface ItemplateData {
@@ -33,26 +34,22 @@ const transporter = nodemailer.createTransport({
 console.log(process.env.EMAIL, process.env.PASSWORD)
 
 async function sendMail(receiver: string, templateData: ItemplateData) {
-    // Lecture du contenu du template ejs
-    const templatePath = path.join(__dirname + '/mail.ejs')
-    const template = fs.readFileSync(templatePath, 'utf8')
-
-    // Creer un rendu HTML avec les données lu dans le fichier ejs.
-    const content = ejs.render(template, templateData)
-
-    // L'objet de l'email est statique
-    const subject = "Bibliotheque Communal";
-
-    //options du message a envoyer
-    const mailOptions = {
-        from: emailConfig.email,
-        to: receiver,
-        subject: subject,
-        html: content
-    }
-
-    // Envoi du message
     try {
+        // Lecture du contenu du template ejs
+        const templatePath = path.join(__dirname + '/mail.ejs')
+        const template = fs.readFileSync(templatePath, 'utf8')
+
+        // Creer un rendu HTML avec les données lu dans le fichier ejs.
+        const content = ejs.render(template, templateData)
+
+        //options du message a envoyer
+        const mailOptions = {
+            from: emailConfig.email,
+            to: receiver,
+            html: content
+        }
+
+        // Envoi du message
         await transporter.sendMail(mailOptions)
         console.log("Message envoyé avec succes")
     } catch (error) {
