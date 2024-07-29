@@ -16,17 +16,16 @@ const loandControllers = {
 
             //rechercher l'utilisateur en question
             const livreExist = await prisma.book.findFirst({
-                where: {
-                    book_id: bookID
-                }
+                where: {book_id: bookID}
             });
-            if(!livreExist) return msgError.notFound(res, "le livre mentionné n'existe pas");
+            if(!livreExist) return msgError.notFound(res, "le livre mentionné n'existe pas !");
+
+            // verification du status du livre
+            if(livreExist.status === "emprunte") return msgError.notFound(res, "le livre demandé est dejà emprunté !");
 
             //rechercher l'utilisateur en question
             const userExist = await prisma.user.findFirst({
-                where: {
-                    user_id: userID
-                }
+                where: {user_id: userID}
             });
             if(!userExist) return msgError.notFound(res, "l'utilisateur mentionné n'existe pas");
 
@@ -68,6 +67,9 @@ const loandControllers = {
             const existLoand = await prisma.loand.findFirst({
                 where: {
                     loand_id: id
+                },
+                include: {
+                    books: true
                 }
             });
             if(!existLoand) return msgError.notFound(res, "l'emprunt' specifier est introuvabe")

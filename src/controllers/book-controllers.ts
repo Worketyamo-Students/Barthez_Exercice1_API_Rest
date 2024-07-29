@@ -23,7 +23,7 @@ const booksControllers = {
             if(allBooks.length === 0) return res.status(HttpCode.OK).json({msg: "Pas encore de livre pour le moment !"})
 
             // Message de succes
-            res.status(HttpCode.OK).json({allBooks});
+            res.status(HttpCode.OK).json({msg: allBooks});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
@@ -89,7 +89,7 @@ const booksControllers = {
 
     // Supprimer un livre
     deleteBook: async(req: Request, res: Response) =>{
-        try {
+            try {
             // Recuperation de l'identifiant dans les parametres de la requete
             const {id} = req.params;
             if(!id) msgError.badRequest(res, "identifiant invalide !");
