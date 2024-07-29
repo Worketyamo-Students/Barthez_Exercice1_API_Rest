@@ -12,18 +12,23 @@ import loand from './routes/loand-routes';
 import notification from './routes/notification-routes';
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(compression());
+
+// Configurations de securité
+// app.use(helmet() //Pour configurer les entete http securisés
+// app.use(cors())) // Pour gerer le partage des ressources
+
+// Configuration globaux de l'application express
+app.use(express.json()); // parser les requets json
+app.use(express.urlencoded({ extended: true })); // parser les requetes url encoder
+app.use(compression()); //compression des requetes http
 app.use(
 	rateLimit({
 		max: ONE_HUNDRED,
 		windowMs: SIXTY,
 		message: 'Trop de Requete à partir de cette adresse IP '
 	})
-);
-
-app.use(morgan('combined'));
+);//limite le nombre de requete
+app.use(morgan('combined'));// Journalisation des requetes au format combined
 
 // Routes de mon application
 app.use('/users',user);
@@ -31,6 +36,7 @@ app.use('/books', book);
 app.use('/loands', loand);
 app.use('/notifications', notification);
 
-
+// Configuration de la documentation avec Swagger
 setupSwagger(app);
+
 export default app;
