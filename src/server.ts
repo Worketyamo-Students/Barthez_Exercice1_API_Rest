@@ -48,7 +48,7 @@ app.use(
 	'/users',
 	rateLimit({
 		max: 10,
-		windowMs: 6,
+		windowMs: SIXTY,
 		message: 'Trop de Requete à partir de cette adresse IP '
 	}),	
 	user
@@ -58,7 +58,7 @@ app.use(
 	'/books',
 	rateLimit({
 		max: 10,
-		windowMs: 6,
+		windowMs: SIXTY,
 		message: 'Trop de Requete à partir de cette adresse IP '
 	}),	
 	book
@@ -68,7 +68,7 @@ app.use(
 	'/loands',
 	rateLimit({
 		max: 10,
-		windowMs: 6,
+		windowMs: SIXTY,
 		message: 'Trop de Requete à partir de cette adresse IP '
 	}),	 
 	loand
@@ -78,7 +78,7 @@ app.use(
 	'/notifications', 
 	rateLimit({
 		max: 10,
-		windowMs: 6,
+		windowMs: SIXTY,
 		message: 'Trop de Requete à partir de cette adresse IP '
 	}),	
 	notification
