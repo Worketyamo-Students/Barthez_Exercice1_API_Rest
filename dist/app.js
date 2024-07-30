@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Lancement du serveur
 const env_1 = require("./core/config/env");
 const server_1 = __importDefault(require("./server"));
-server_1.default.listen(env_1.envs.PORT, () => {
+server_1.default.listen(env_1.envs.PORT || 3001, () => {
     console.log(`Server running on port http://localhost:${env_1.envs.PORT}/`);
     console.log(`Documentation  : http://localhost:${env_1.envs.PORT}/api-docs`);
 });

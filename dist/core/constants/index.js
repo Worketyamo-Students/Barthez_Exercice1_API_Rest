@@ -1,8 +1,8 @@
 "use strict";
-/* eslint-disable @typescript-eslint/no-magic-numbers */
+// /* eslint-disable @typescript-eslint/no-magic-numbers */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpCode = exports.ONE_THOUSAND = exports.ONE_HUNDRED = exports.SIXTY = void 0;
-exports.SIXTY = 60;
+exports.SIXTY = 6000;
 exports.ONE_HUNDRED = 100;
 exports.ONE_THOUSAND = 1000;
 var HttpCode;

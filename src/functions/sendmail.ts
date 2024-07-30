@@ -17,7 +17,7 @@ const emailConfig = {
 const validateEmailConfig = () => {
     if(!emailConfig.email || !emailConfig.password)
     console.error("Addresse email ou mot de passe non configuré !");
-    process.exit(1);
+    return
 };
 validateEmailConfig();
 

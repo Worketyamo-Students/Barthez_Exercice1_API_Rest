@@ -20,6 +20,7 @@ const app = express();
 
 // Configurations de securité
 app.use(helmet()) //Pour configurer les entete http securisés
+
 app.use(cors({
 	methods: ['GET', 'POST', 'PUT', 'DELETE'],
 	allowedHeaders: ['Content-Type', 'Authorization']
@@ -37,8 +38,8 @@ app.use(
 	})
 );//limite le nombre de requete
 app.use(cookieParser()); //configuration des cookies (JWT)
-app.use(morgan('combined'));// Journalisation des requetes au format combined
 
+app.use(morgan('combined'));// Journalisation des requetes au format combined
 
 
 // Routes de mon application
@@ -49,7 +50,7 @@ app.use(
 	rateLimit({
 		max: 10,
 		windowMs: SIXTY,
-		message: 'Trop de Requete à partir de cette adresse IP '
+		message: 'Trop de Requete à partir de cette adresse IP ',
 	}),	
 	user
 );

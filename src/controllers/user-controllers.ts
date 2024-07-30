@@ -36,7 +36,7 @@ const usersControllers = {
 
             //Mot de bienvenu a l'utilisateur qui vient de s'inscrire
             const message = "<h1>Bienvenue à la bibliotheque commubale</h1> <br> <p>Ici Vous pouvez:</p> <ul><li>Venir lire gratuitement sur des sujets d'actualité, mangas, journaux, bouquins, et levres de tout genre</li> <li>Faire des emprunts des livres</li> <li>Discuter sur ce que vous lisez quotidiennement avec d'autres passionés de la lecture</li></ul>"
-            await sendMail(newUser.email,{name: newUser.name, content: message})
+            sendMail(newUser.email,{name: newUser.name, content: message})
             console.log(newUser.email, newUser.name, message)
             
             // Generer une Access token et generer un refresh tokken pour l'utilisateur

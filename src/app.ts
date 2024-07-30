@@ -2,7 +2,7 @@
 // Lancement du serveur
 import { envs } from './core/config/env';
 import app from './server';
-app.listen(envs.PORT, () => {
+app.listen(envs.PORT || 3001, () => {
 	console.log(`Server running on port http://localhost:${envs.PORT}/`);
 	console.log(`Documentation  : http://localhost:${envs.PORT}/api-docs`);
 });
