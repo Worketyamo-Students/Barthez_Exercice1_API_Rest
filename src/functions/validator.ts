@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]){5,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 
 const validator = {
     validateUser: [
