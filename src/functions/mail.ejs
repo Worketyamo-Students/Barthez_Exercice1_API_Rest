@@ -26,7 +26,7 @@
 
 		<!-- Bloc du contenu centrale -->
 		<main class="content">
-			<p><%= content %></p>
+			<p><%- content %></p>
       
       <!-- Devise de la bibliotheque -->
        <div style="display: flex; gap: 1rem;" class="">
@@ -41,12 +41,12 @@
 		<!-- Pieds de page -->
 		<footer>
 			<p>cordilement la <a href="#">Bibliotheque Communale</a>.</p>
-			<div>
+			<div className="flex items-center gap-4">
 				<a href="#">Whatsapp</a>
 				<a href="#">Facebook</a>
 				<a href="#">Instagram</a>
 			</div>
-      <span>Merci de nous rejoindre !</span>
+      <span className="text-green-600">Merci de nous rejoindre !</span>
 		</footer>
 	</body>
 

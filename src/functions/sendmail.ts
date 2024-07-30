@@ -15,9 +15,10 @@ const emailConfig = {
     password: process.env.PASSWORD
 }
 const validateEmailConfig = () => {
-    if(!emailConfig.email || !emailConfig.password)
-    console.error("Addresse email ou mot de passe non configuré !");
-    return
+    if(!emailConfig.email || !emailConfig.password){
+        console.error("Addresse email ou mot de passe non configuré !");
+        process.exit(1);
+    }
 };
 validateEmailConfig();
 
@@ -31,7 +32,6 @@ const transporter = nodemailer.createTransport({
         pass: emailConfig.password,
     },
 });
-console.log(process.env.EMAIL, process.env.PASSWORD)
 
 async function sendMail(receiver: string, templateData: ItemplateData) {
     try {
@@ -46,14 +46,16 @@ async function sendMail(receiver: string, templateData: ItemplateData) {
         const mailOptions = {
             from: emailConfig.email,
             to: receiver,
+            subject: "Bibliotheque Communal",
             html: content
         }
 
         // Envoi du message
         await transporter.sendMail(mailOptions)
-        console.log("Message envoyé avec succes")
+        console.log("Message envoyé avec succes");
     } catch (error) {
         console.error(`Une erreur est survenue lors de l'envoi de l'addresse email: ${error}`)
+        throw error;
     }
 }
 
