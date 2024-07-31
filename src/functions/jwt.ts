@@ -16,13 +16,14 @@ const userToken = {
             algorithm: process.env.JWT_ALGORITHM as jwt.Algorithm,
             expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string
         } 
+        console.log(signOption.algorithm, signOption.expiresIn)
         const privateKey = readFileSync(process.env.JWT_PRIVATE_KEY as string, "utf-8");
         return jwt.sign(payload, privateKey, signOption);
     },
 
     verifyAccessToken: (token: string) => {
         try {
-            const publicKey = readFileSync(process.env.JWT_PRIVATE_KEY as string, "utf-8");
+            const publicKey = readFileSync(process.env.JWT_PUBLIC_KEY as string, "utf-8");
             return jwt.verify(token, publicKey)
         } catch (error) {
             console.error(`Invalide access token: ${error}`)
@@ -38,7 +39,7 @@ const userToken = {
     },
 
     // REFRESH TOKEN ET SES FONCTIONS
-    refreshToken: (payload: string) => {
+    refreshToken: (payload: Ipayload) => {
         const signOption = {
             algorithm: process.env.JWT_ALGORITHM as jwt.Algorithm,
             expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string
@@ -49,7 +50,7 @@ const userToken = {
 
     verifyRefreshToken: (token: string) => {
         try {
-            const publicKey = readFileSync(process.env.JWT_REFRESH_PRIVATE_KEY as string, "utf-8");
+            const publicKey = readFileSync(process.env.JWT_REFRESH_PUBLIC_KEY as string, "utf-8");
             return jwt.verify(token, publicKey)
         } catch (error) {
             console.error(`token invalide ${error}`);

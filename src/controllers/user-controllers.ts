@@ -4,6 +4,7 @@ import { HttpCode } from "../core/constants";
 import { comparePassword, hashText } from "../functions/pasword-crypt";
 import { msgError } from "../functions/message";
 import sendMail from "../functions/sendmail";
+import userToken from "../functions/jwt";
 
 const Prisma = new PrismaClient();
 
@@ -38,10 +39,6 @@ const usersControllers = {
             const message = "<h1>Bienvenue à la bibliotheque commubale</h1> <br> <p>Ici Vous pouvez:</p> <ul><li>Venir lire gratuitement sur des sujets d'actualité, mangas, journaux, bouquins, et levres de tout genre</li> <li>Faire des emprunts des livres</li> <li>Discuter sur ce que vous lisez quotidiennement avec d'autres passionés de la lecture</li></ul>"
             sendMail(newUser.email,{name: newUser.name, content: message})
             
-            // Generer une Access token et generer un refresh tokken pour l'utilisateur
-
-
-
             // Message de success
             res.status(HttpCode.CREATED).json({msg: `l'utilisateur: ${newUser.name} a ete ajouter avec success`});
         } catch (error) {
@@ -126,7 +123,7 @@ const usersControllers = {
         }
     },
 
-    // Connexion d'un utilisateur
+    // Connexion_d_'_un utilisateur
     connexionUser: async(req: Request, res: Response) => {
         try {
             // recuperer les informations du corps de la requete
@@ -149,6 +146,22 @@ const usersControllers = {
             // comparaison des mots de passes
             const comparaison = await comparePassword(password, hashPassword);
             if(!comparaison) return msgError.notFound(res, "Mot depasse incorrect!");
+            
+            selectUser.password = "";
+            // Generer une Access token et generer un refresh tokken pour l'utilisateur
+            const accessToken = userToken.accessToken(selectUser);
+            const refreshToken = userToken.refreshToken(selectUser);
+            
+            // Stocker le access token dans le header de la requete
+            res.setHeader('Authorization', `Bearer ${accessToken}`);
+
+            // stoker le refresh token dans un cookie securisé
+            const cookieOption = {
+                secure: true, 
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+                httpOnly: true
+            };
+            res.cookie('_library', refreshToken, cookieOption)
 
             // Message de success
             res.status(HttpCode.OK).json({msg: `utilisateur Connecté !`});
