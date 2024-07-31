@@ -79,7 +79,7 @@ const loandControllers = {
             if (!updateBook) return msgError.notFound(res, "erreur lors de mis à jour d'un livre");
 
             // Message de success
-            res.status(HttpCode.CREATED).json({ msg: `l'utilisateur a ete ajouter avec success` });
+            res.status(HttpCode.CREATED).json({ msg: `le livre a bien été retourné !`});
         } catch (error) {
             return msgError.serveurError(res, error);
         }
@@ -127,6 +127,7 @@ const loandControllers = {
                 const userName = user? user.name : "nom inconnu";
                 const userEmail = user? user.email: "email inconnu";
                 const infoUser = {userName,userEmail};
+                
                 // ajout des infos dans le tableau
                 loanInfo.push({infoUser, bookName, loanDate})
             }

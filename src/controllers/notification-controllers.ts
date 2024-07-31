@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from 'express';
 import { HttpCode } from "../core/constants";
 import { msgError } from "../functions/message";
+import sendMail from "../functions/sendmail";
 
 const prisma = new PrismaClient();
 
@@ -29,8 +30,8 @@ const notificationControllers = {
             if(!book) return msgError.notFound(res, "le livre specifier est introuvabe")
 
             //Fonction pour envoyer un message a l'utilisateur
-
-
+            const content = `le livre ${book.title} est disponible`
+            sendMail(user.email, {name: user.name, content});
 
             // Message de success
             res.status(HttpCode.OK).json({msg: "Utilisateur informé"})
