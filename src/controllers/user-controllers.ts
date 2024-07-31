@@ -27,7 +27,7 @@ const usersControllers = {
             // ajouter l'utilisateur dans la base de données via prisma
             const newUser = await Prisma.user.create({
                 data: {
-                    name: name,
+                    name: name.toUpperCase(),
                     email: email,
                     password: hashPassword
                 }
@@ -91,7 +91,7 @@ const usersControllers = {
                 },
 
                 data: {
-                    name: name,
+                    name: name.toUpperCase(),
                     email: email,
                     password: hashPassword
                 }
@@ -142,7 +142,7 @@ const usersControllers = {
                     email: email
                 }
             });
-            if(!selectUser) return msgError.notFound(res, "l'Utilisateur n'a pas ete trouvé !");
+            if(!selectUser) return msgError.notFound(res, "l'utilisateur n'a pas été trouvé !");
 
             // Recuperation du mot de passe dans la base de données
             const hashPassword = selectUser.password;

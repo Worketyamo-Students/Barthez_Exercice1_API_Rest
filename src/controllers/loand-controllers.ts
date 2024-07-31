@@ -6,13 +6,11 @@ import { msgError } from "../functions/message";
 const prisma = new PrismaClient();
 
 const loandControllers = {
+    // Fonction pour ajouter un emprunt
     loandBook: async (req: Request, res: Response) => {
         try {
             // Recuperation des id du livres et de l'utilisateur dans le corps de la requete
             const { bookID, userID } = req.body;
-
-            // Verification de la presence de ces elements
-            if (!bookID || !userID) return msgError.badRequest(res, "Veillez saisir toutes les informations");
 
             //rechercher l'utilisateur en question
             const livreExist = await prisma.book.findUnique({
@@ -49,6 +47,7 @@ const loandControllers = {
         }
     },
 
+    // fonction pour rembourser un livre emprunter
     backBook: async (req: Request, res: Response) => {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
@@ -92,13 +91,48 @@ const loandControllers = {
             const { userID } = req.params;
             if (!userID) msgError.badRequest(res, "identifiant invalide !");
 
-            const userLoand = await prisma.loand.findMany({
+            // Recuperation de tous les emprunts que l'utilisateur a fait
+            const loans = await prisma.loand.findMany({
                 where: {userID}
             });
-            if (!userLoand) return msgError.notFound(res, "erreur lors de la recuperation de l'historique !");
+            if (loans.length === 0) return msgError.notFound(res, "erreur lors de la recuperation de l'historique !");
+    
+            interface IloanInfo {
+                infoUser: {
+                    userName: string,
+                    userEmail: string
+                },
+                bookName: string,
+                loanDate: Date
+            }
+            const loanInfo: IloanInfo[] = [];
+
+            // recherche du nom du livre, et de la date de l'emprunt sur chaque emprund pour afficher
+            for(const loan of loans) {
+                // recuperation de l'id du livre emprunté
+                const book_id = loan.bookID;
+
+                //recuperation de l'utilisateur qui a emprunté
+                const user_id = loan.userID
+
+                // recherche du nom du livre
+                const book = await prisma.book.findUnique({where: {book_id}});
+                const bookName = book? book.title : "livre inconnue";
+
+                // recuperation de la date de l'emprunt
+                const loanDate = loan.loandDate
+            
+                // recuperation du nom de l'emprunteur
+                const user = await prisma.user.findUnique({where: {user_id}})
+                const userName = user? user.name : "nom inconnu";
+                const userEmail = user? user.email: "email inconnu";
+                const infoUser = {userName,userEmail};
+                // ajout des infos dans le tableau
+                loanInfo.push({infoUser, bookName, loanDate})
+            }
 
             // Message de success
-            res.status(HttpCode.CREATED).json({ msg: userLoand });
+            res.status(HttpCode.OK).json({ msg: loanInfo});
         } catch (error) {
             return msgError.serveurError(res, error);
         }

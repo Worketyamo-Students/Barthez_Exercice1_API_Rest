@@ -41,7 +41,7 @@ const validator = {
             .trim().notEmpty().withMessage('Le nom de l\'autheur ne doit pas etre vide !')
             .isString().withMessage('le nom de l\'autheur doit etre une chaine de caractere !')
             .isLength({min: 3}).withMessage('nom de l\'autheur trop court !')
-            .isLength({max: 20}).withMessage('nom de l\'autheur trop long !')
+            .isLength({max: 30}).withMessage('nom de l\'autheur trop long !')
         ,
         //Validation of description
         body('description')
@@ -62,11 +62,8 @@ const validator = {
         // validation of ISBN
         body('ISBN')
             .optional() // l'ISBN est facultatif
-            .isString().withMessage('l\'ISBN doit etre une chaine de caractere !')
-            .isLength({min: 2}).withMessage('ISBN trop court !')
-            .isLength({max: 20}).withMessage('ISBN trop long !')
+            .isISBN().withMessage("Format ISBN incorrect !")
         ,
-
     ],
 
     validateNotification: [
@@ -77,6 +74,21 @@ const validator = {
             .isString().withMessage('le message doit etre une chaine de caractere !')
             .isLength({min: 4}).withMessage('message trop court')
             .isLength({max: 20}).withMessage('message trop long')
+        ,
+    ],
+
+    validateLoand: [
+        // validation de l'id de l'utilisateur entrer
+        body('userID')
+            .exists().withMessage('L\'ID de l\'utilisateur est requis !')
+            .trim().notEmpty().withMessage('L\'ID de l\'utilisateur ne peut etre vide')
+            .isMongoId().withMessage('Format de l\'ID invalide !')
+        ,
+        // validation de l'id du livre
+        body('bookID')
+            .exists().withMessage('L\'ID du livre est requis !')
+            .trim().notEmpty().withMessage('L\'ID du livre ne peut etre vide')
+            .isMongoId().withMessage('Format de l\'ID invalide !')
         ,
     ]
 }

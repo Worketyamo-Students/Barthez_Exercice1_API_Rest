@@ -1,10 +1,12 @@
 import { Router } from "express";
 import loandControllers from "../controllers/loand-controllers";
+import validator from "../functions/validator";
+import validate from "../middleware/validate";
 
 const loand = Router();
 
 //Emprunter un livre
-loand.post('/', loandControllers.loandBook);
+loand.post('/', validator.validateLoand, validate, loandControllers.loandBook);
 
 // Retourné un livre emprunter
 loand.put('/:id/return', loandControllers.backBook);

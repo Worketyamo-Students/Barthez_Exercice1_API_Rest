@@ -9,7 +9,7 @@ const user = Router();
 user.post('/signup', validator.validateUser, validate, usersControllers.inscriptionUser);
 
 // B-connexion de l'utilisateur
-user.post('/login', validator.validateBook, validate, usersControllers.connexionUser);
+user.post('/login', usersControllers.connexionUser);
 
 // C-Deconnexion de l'utilisateur
 user.post('/logout/:id', usersControllers.deconnexionUser);
