@@ -15,10 +15,10 @@ user.post('/login', usersControllers.connexionUser);
 user.post('/logout/:id', usersControllers.deconnexionUser);
 
 // D-Consulter le profile de l'utilisateur
-user.get('/profile/:id',usersControllers.consultProfileUser);
+user.get('/profile', usersControllers.consultProfileUser);
 
 // E-Mettre a jour le profil de l'utilisateur
-user.put('/profile/:id',validator.validateUser, validate ,usersControllers.updateUser);
+user.put('/profile/:id', validator.validateUser, validate ,usersControllers.updateUser);
 
 // F-supprimer un utilisateur
 user.delete('/profile/:id', usersControllers.deleteUser);

@@ -50,15 +50,15 @@ const usersControllers = {
     consultProfileUser: async(req: Request, res: Response) => {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
-            const {id} = req.params;
-            if(!id) msgError.badRequest(res, "identifiant invalide !");
+            const {email} = req.body;
+            //if(!email) msgError.badRequest(res, "email requis !");
 
-            // recherche de l'utilisateur avec cet identifiant
+            // recherche de l'utilisateur avec cet email
             const User = await Prisma.user.findUnique({
-                where: {user_id: id},
+                where: {email},
                 select: {name: true, email: true,}
             });
-            if(!User) return msgError.notFound(res, "Erreur lors de la selection de l'utilisateur!");
+            if(!User) return msgError.notFound(res, "l'utilisateur non trouvé!");
 
             // Message de success
             res.status(HttpCode.OK).json({User});
@@ -184,9 +184,13 @@ const usersControllers = {
             if(!selectUser) return msgError.notFound(res, "L'utilisateur n'existe pas !");
 
             // Invalider le token de l'utilisateur
+            const cookieOption = {
+                secure: true, 
+                httpOnly: true
+            };
 
-
-
+            res.clearCookie('_library', cookieOption)
+    
             // Message de success
             res.status(HttpCode.OK).json({msg: "Utilisateur deconnecté !"});
         } catch (error) {
