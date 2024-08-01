@@ -24,7 +24,7 @@ const userToken = {
     verifyAccessToken: (token: string) => {
         try {
             const publicKey = readFileSync(process.env.JWT_PUBLIC_KEY as string, "utf-8");
-            return jwt.verify(token, publicKey)
+            return jwt.verify(token, publicKey) as Ipayload;
         } catch (error) {
             console.error(`Invalide access token: ${error}`)
         }
@@ -51,7 +51,7 @@ const userToken = {
     verifyRefreshToken: (token: string) => {
         try {
             const publicKey = readFileSync(process.env.JWT_REFRESH_PUBLIC_KEY as string, "utf-8");
-            return jwt.verify(token, publicKey)
+            return jwt.verify(token, publicKey) as Ipayload;
         } catch (error) {
             console.error(`token invalide ${error}`);
         }

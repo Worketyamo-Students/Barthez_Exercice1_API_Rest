@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from 'express';
-import { HttpCode } from "../core/constants";
+import { FIVE, HttpCode } from "../core/constants";
 import { msgError } from "../functions/message";
 
 const prisma = new PrismaClient();
@@ -26,6 +26,9 @@ const loandControllers = {
                 where: { user_id: userID }
             });
             if (!userExist) return msgError.notFound(res, "l'utilisateur mentionné n'existe pas");
+            
+            // Verification que l'utilisateur peut encore faire un emprunt
+            if(userExist.nbEmprunts === FIVE) return res.status(HttpCode.FORBIDDEN).json({msg: "nombre d'emprunts maximal atteint, veillez d'abord rembourser les precedent livres"})
 
             //Mettre a jour le statut du livre
             const updateBookStatus = await prisma.book.update({
@@ -39,6 +42,14 @@ const loandControllers = {
                 data: {bookID,userID}
             });
             if (!newLoand) return msgError.notFound(res, "Erreur lors de l'ajout de l'emprunt");
+            
+            // Ajout du nombre d'emprunts de l'utilisateur
+            await prisma.user.update({
+                where: {user_id: userID},
+                data: {
+                    nbEmprunts: (userExist.nbEmprunts + 1)
+                }
+            })
 
             // Message de success
             res.status(HttpCode.CREATED).json({ msg: `emprunt ajouter avec success` });
@@ -77,6 +88,19 @@ const loandControllers = {
                 data: {status: "disponible"}
             });
             if (!updateBook) return msgError.notFound(res, "erreur lors de mis à jour d'un livre");
+
+            //Mis a jour du nombre d'emprunt de l'utilisateur
+            const userLoan = await prisma.user.findFirst({where: {user_id: existLoand.userID}})
+            if(!userLoan) return msgError.notFound(res, "responsable de l'emprunt non trouvé !")
+            const updateUserLoan = await prisma.user.update({
+                where: {
+                    user_id: userLoan.user_id
+                },
+                data: {
+                    nbEmprunts: (userLoan.nbEmprunts - 1),
+                }
+            })
+            if(!updateUserLoan) return msgError.notFound(res, "Impossible de mettre a jour l'emprunt de l'utilisateur !");
 
             // Message de success
             res.status(HttpCode.CREATED).json({ msg: `le livre a bien été retourné !`});

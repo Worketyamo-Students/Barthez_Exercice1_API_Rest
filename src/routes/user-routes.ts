@@ -2,6 +2,7 @@ import { Router } from "express";
 import usersControllers from "../controllers/user-controllers";
 import validator from "../functions/validator";
 import validate from "../middleware/validate";
+import auth from "../middleware/authentif";
 
 const user = Router();
 
@@ -22,5 +23,13 @@ user.put('/profile/:id', validator.validateUser, validate ,usersControllers.upda
 
 // F-supprimer un utilisateur
 user.delete('/profile/:id', usersControllers.deleteUser);
+
+// Routes Necessaires
+    // refresh token
+    user.post(
+        '/refresh',
+        auth.decodeRefreshToken,
+        usersControllers.refreshToken
+    )
 
 export default user;

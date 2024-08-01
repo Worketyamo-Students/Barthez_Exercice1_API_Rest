@@ -1,5 +1,7 @@
 import { Router } from "express";
 import notificationControllers from "../controllers/notification-controllers";
+import validator from "../functions/validator";
+import validate from "../middleware/validate";
 
 const notification = Router();
 
@@ -7,6 +9,6 @@ const notification = Router();
 notification.post('/:userID/:bookID', notificationControllers.availableBook);
 
 // Email de rappel pour informer de la date de retour de livre
-notification.post('/:userID/:empruntID', notificationControllers.remenberCallBackDate);
+notification.post('/info/:userID/:empruntID', validator.validateNotification, validate, notificationControllers.remenberCallBackDate);
 
 export default notification;

@@ -66,7 +66,7 @@ app.use(
 );
 // Routes des emprunts
 app.use(
-	'/loands',
+	'/loans',
 	rateLimit({
 		max: 10,
 		windowMs: SIXTY,

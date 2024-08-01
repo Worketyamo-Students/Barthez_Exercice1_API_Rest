@@ -34,7 +34,11 @@ const booksControllers = {
         try {
             // Recuperation des information du corps de la requete
             const {title, author, description, publicateYear, ISBN} = req.body;
-
+            
+            // verification que le livre n'esiste pas dejà
+            const everExist = await prisma.book.findFirst({where: {title}})
+            if(everExist) return res.status(HttpCode.FORBIDDEN).json({msg: "Un livre avec ce titre existe dejà !"})
+            
             // Ajout d'un nouveau livre avec les infos entrés
             const newBook = await prisma.book.create({
                 data: {
@@ -93,6 +97,15 @@ const booksControllers = {
             // Recuperation de l'identifiant dans les parametres de la requete
             const {id} = req.params;
             if(!id) msgError.badRequest(res, "identifiant invalide !");
+            
+            // Preciser qu'on ne peut supprimer un livre emprunter
+            const selectLoanBook = await prisma.book.findFirst({
+                where: {
+                    book_id: id,
+                    status: "emprunte"
+                }
+            })
+            if(selectLoanBook) return res.status(HttpCode.FORBIDDEN).json({msg: "vous ne pouvez pas supprimer ce livre, il est emprunter"});
 
             // Suppression du livre dont l'id est donné
             const deleteBook = await prisma.book.delete({

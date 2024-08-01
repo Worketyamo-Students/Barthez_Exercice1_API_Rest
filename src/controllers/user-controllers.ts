@@ -51,7 +51,7 @@ const usersControllers = {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
             const {email} = req.body;
-            //if(!email) msgError.badRequest(res, "email requis !");
+            if(!email) msgError.badRequest(res, "email requis !");
 
             // recherche de l'utilisateur avec cet email
             const User = await Prisma.user.findUnique({
@@ -188,13 +188,44 @@ const usersControllers = {
                 secure: true, 
                 httpOnly: true
             };
-
             res.clearCookie('_library', cookieOption)
     
             // Message de success
             res.status(HttpCode.OK).json({msg: "Utilisateur deconnecté !"});
         } catch (error) {
             return msgError.serveurError(res, error);
+        }
+    },
+
+    refreshToken: async (req: Request, res: Response)=> {
+        const token = req.cookies._library;
+        console.log(token)
+        if(!token) return msgError.notFound(res, "pas de token trouvé !");
+
+        try {
+            const userData = userToken.verifyRefreshToken(token);
+            if(!userData) return msgError.notFound(res, "erreur lors de la verification du token");
+
+            // retrouver le user avec les informations decode de son refresh token
+            const user = await Prisma.user.findFirst({
+                where: {email: userData.email}
+            });
+            if(!user) return msgError.notFound(res, "erreur lors de l'extraction de l'utilisateur")
+
+            user.password = "";
+            
+            const newAccessToken = userToken.accessToken(user);
+            const newRefreshToken = userToken.refreshToken(user);
+
+            res.setHeader('Authorization', `Bearer ${newAccessToken}`);
+            const cookieOption = {
+                secure: true, 
+                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+                httpOnly: true
+            };
+            res.cookie('_library', newRefreshToken, cookieOption)
+        } catch (error) {
+            return msgError.serveurError(res, error)
         }
     }
 };

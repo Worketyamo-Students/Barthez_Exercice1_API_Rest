@@ -13,6 +13,13 @@ const notificationControllers = {
             const {userID, bookID} = req.params;
             if(!userID || !bookID) msgError.badRequest(res, "identifiant invalide !");
             
+            // on se rassure que le livre est vraiment disponible
+            const available = await prisma.book.findFirst({where: {
+                book_id: bookID,
+                status: "disponible"
+            }})
+            if(!available) return msgError.notFound(res, "Le livre specier est introuvale ou non disponible pour le moment!")
+
             // verifier l'utilisateur specifier
             const user = await prisma.user.findFirst({
                 where: {
@@ -43,9 +50,11 @@ const notificationControllers = {
     remenberCallBackDate: async(req:Request, res:Response) => {
         try {
             // Recuperation de l'identifiant dans les parametres de la requete
-            const {userID, empruntID, message} = req.params;
-            if(!userID || !empruntID || !message) msgError.badRequest(res, "identifiant invalide !");
+            const {userID, empruntID} = req.params;
+            if(!userID || !empruntID) msgError.badRequest(res, "identifiant invalide !");
             
+            const {message} = req.body
+
             // verifier l'utilisateur specifier
             const user = await prisma.user.findFirst({
                 where: {
@@ -58,16 +67,13 @@ const notificationControllers = {
             const loand = await prisma.loand.findFirst({
                 where: {
                     loand_id: empruntID,
-                    OR: [
-                        { backDate: null },
-                        { backDate: undefined },
-                    ]
+                    //backDate: null
                 }
             });
             if(!loand) return msgError.notFound(res, "l'emprunt specifier est introuvabe ou a dejà ete rembourser !")
 
             //Fonction pour envoyer un message a l'utilisateur
-
+            sendMail(user.email, {name: user.name, content: message})
             
             // Message de success
             res.status(HttpCode.OK).json({msg: "Utilisateur rappeler"})

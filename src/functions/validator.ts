@@ -67,13 +67,14 @@ const validator = {
     ],
 
     validateNotification: [
+        
         //validation of message
         body('message')
             .exists().withMessage('Le message de est requis !')
             .trim().notEmpty().withMessage('le message ne peut etre vide')
             .isString().withMessage('le message doit etre une chaine de caractere !')
             .isLength({min: 4}).withMessage('message trop court')
-            .isLength({max: 20}).withMessage('message trop long')
+            .isLength({max: 500}).withMessage('message trop long')
         ,
     ],
 

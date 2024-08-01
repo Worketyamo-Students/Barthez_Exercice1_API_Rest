@@ -24,6 +24,9 @@ model User {
 
   // Un utilisateur peut recevoir plusieur notifications
   notifications Notification[]
+
+  //Limiter ne nombre d'emprunts a 5, comme ça chaque utilisateur sera bloqué
+  nbEmprunts Int @default(0)
 }
 
 model Book {
